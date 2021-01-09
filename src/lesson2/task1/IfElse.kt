@@ -167,6 +167,6 @@ fun triangleKind(a: Double, b: Double, c: Double): Int = when {
  */
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
     var result = max(0, min(b, d) - max(a, c))
-    if ((result == 0) and !((a == c) || (b == d) || (a == d) || (b == c) || (a == b) || (c == d) )) result = -1
+    if ((result == 0) and (b !in c..d)) result = -1
     return result
 }
