@@ -196,13 +196,12 @@ fun squareBetweenExists(m: Int, n: Int): Boolean = sqr(sqrt(n.toDouble()).toInt(
  */
 fun revert(n: Int): Int {
     var x = n
-    var result = 0
-    while (x > 10) {
-        result = (result + x % 10) * 10
+    var rever = 0
+    while (x > 0) {
+        rever = rever * 10 + x % 10
         x /= 10
     }
-    result = (result + x % 10)
-    return result
+    return rever
 }
 
 /**
