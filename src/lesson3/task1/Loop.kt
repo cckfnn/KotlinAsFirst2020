@@ -74,13 +74,14 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun digitNumber(n: Int): Int {
-    var x = 1
-    var m = n
-    while (m >= 10) {
-        m /= 10
-        x++
+    var count = 0
+    if (abs(n) / 10 == 0) return 1
+    var i = abs(n)
+    while (i > 0) {
+        count++
+        i /= 10
     }
-    return x
+    return count
 }
 
 /**
@@ -171,13 +172,10 @@ fun lcm(m: Int, n: Int): Int {
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
-    var a = m
-    var b = n
-    while ((a != 0) and (b != 0)) {
-        if (a > b) a %= b
-        else b %= a
+    for (i in 2..max(m, n) / 2) {
+        if (m % i == 0 && n % i == 0) return false
     }
-    return a + b == 1
+    return true
 }
 
 /**
@@ -187,12 +185,7 @@ fun isCoPrime(m: Int, n: Int): Boolean {
  * то есть, существует ли такое целое k, что m <= k*k <= n.
  * Например, для интервала 21..28 21 <= 5*5 <= 28, а для интервала 51..61 квадрата не существует.
  */
-fun squareBetweenExists(m: Int, n: Int): Boolean {
-    for (x in m..n) {
-        if (sqrt(x.toDouble()) - floor(sqrt(x.toDouble())) == 0.0) return true
-    }
-    return false
-}
+fun squareBetweenExists(m: Int, n: Int): Boolean = sqr(sqrt(n.toDouble()).toInt()) >= m
 
 /**
  * Средняя (3 балла)
