@@ -376,7 +376,7 @@ fun russian(n: Int): String {
         result.append(dig90[ex / 10 - 2]).append(" ")
         when (val x = ex % 10) {
             0 -> result.append("")
-            1, 2 -> result.append(dig19[1][x])
+            1, 2 -> result.append(dig19[1][x - 1])
             else -> result.append(dig19[0][x])
         }
     }
