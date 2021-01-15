@@ -354,7 +354,7 @@ fun russian(n: Int): String {
         } else {
             result.append(dig90[ex / 10 - 2]).append(" ")
             when (val x = ex % 10) {
-                0 -> result.append("")
+                0 -> result.append("тысяч ")
                 1 -> result.append(dig19[0][x]).append(" тысяча ")
                 2, 3, 4 -> result.append(dig19[0][x]).append(" тысячи ")
                 else -> result.append(dig19[0][x]).append(" тысяч ")
