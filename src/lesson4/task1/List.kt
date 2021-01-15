@@ -196,13 +196,10 @@ fun accumulate(list: MutableList<Int>): MutableList<Int> {
  * Множители в списке должны располагаться по возрастанию.
  */
 fun factorize(n: Int): List<Int> {
+    if (isPrime(n)) return listOf(n)
     var i = 2
     var x = n
     val list = mutableListOf<Int>()
-    if (isPrime(n)) {
-        list.add(n)
-        return list
-    }
     while (x > 1) {
         if (x % i == 0) {
             list.add(i)
@@ -297,7 +294,21 @@ fun decimalFromString(str: String, base: Int): Int {
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
-fun roman(n: Int): String = TODO()
+fun roman(n: Int): String {
+    var x = n
+    val result = StringBuilder()
+    val convertMap = mapOf(
+        Pair(1, "I"), Pair(4, "IV"), Pair(5, "V"), Pair(9, "IX"), Pair(10, "X"), Pair(40, "XL"), Pair(50, "L"),
+        Pair(90, "XC"), Pair(100, "C"), Pair(400, "CD"), Pair(500, "D"), Pair(900, "CM"), Pair(1000, "M")
+    ).toSortedMap(Comparator.reverseOrder())
+    convertMap.forEach { (k, v) ->
+        while (x >= k) {
+            x -= k
+            result.append(v)
+        }
+    }
+    return result.toString()
+}
 
 
 /**
@@ -307,4 +318,67 @@ fun roman(n: Int): String = TODO()
  * Например, 375 = "триста семьдесят пять",
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
-fun russian(n: Int): String = TODO()
+fun russian(n: Int): String {
+    val result = StringBuilder()
+    val dig19 = arrayOf(
+        arrayOf(
+            "", "одна", "две", "три", "четыре", "пять", "шесть", "семь", "восемь", "девять",
+            "десять", "одиннадцать", "двенадцать", "тринадцать", "четырнадцать",
+            "пятнадцать", "шестнадцать", "семнадцать", "восемнадцать", "девятнадцать"
+        ),
+        arrayOf("один", "два")
+    )
+    val dig90 = arrayOf(
+        "двадцать", "тридцать", "сорок", "пятьдесят",
+        "шестьдесят", "семьдесят", "восемьдесят", "девяносто"
+    )
+    val dig900 = arrayOf(
+        "сто", "двести", "триста", "четыреста", "пятьсот",
+        "шестьсот", "семьсот", "восемьсот", "девятьсот"
+    )
+
+    if (n >= 1000) {
+        var ex = n / 1000
+        if (ex >= 100) {
+            result.append(dig900[ex / 100 - 1]).append(" ")
+            ex %= 100
+        }
+        if (ex <= 19) {
+            result.append(dig19[0][ex])
+            when (ex) {
+                0 -> result.append("тысяч ")
+                1 -> result.append(" тысяча ")
+                2 -> result.append(" тысячи ")
+                else -> result.append(" тысяч ")
+            }
+        } else {
+            result.append(dig90[ex / 10 - 2]).append(" ")
+            when (val x = ex % 10) {
+                0 -> result.append("")
+                1 -> result.append(dig19[0][x]).append(" тысяча ")
+                2, 3, 4 -> result.append(dig19[0][x]).append(" тысячи ")
+                else -> result.append(dig19[0][x]).append(" тысяч ")
+            }
+        }
+    }
+    var ex = n % 1000
+    if (ex >= 100) {
+        result.append(dig900[ex / 100 - 1]).append(" ")
+        ex %= 100
+    }
+    if (ex <= 19) {
+        when (ex) {
+            0 -> result.append("")
+            1, 2 -> result.append(dig19[1][ex - 1])
+            else -> result.append(dig19[0][ex])
+        }
+    } else {
+        result.append(dig90[ex / 10 - 2]).append(" ")
+        when (val x = ex % 10) {
+            0 -> result.append("")
+            1, 2 -> result.append(dig19[1][x])
+            else -> result.append(dig19[0][x])
+        }
+    }
+    return result.toString().trim()
+}
