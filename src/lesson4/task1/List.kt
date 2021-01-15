@@ -348,7 +348,7 @@ fun russian(n: Int): String {
             when (ex) {
                 0 -> result.append("тысяч ")
                 1 -> result.append(" тысяча ")
-                2 -> result.append(" тысячи ")
+                2, 3, 4 -> result.append(" тысячи ")
                 else -> result.append(" тысяч ")
             }
         } else {
