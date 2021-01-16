@@ -122,7 +122,7 @@ fun buildSumExample(list: List<Int>) = list.joinToString(separator = " + ", post
  * по формуле abs = sqrt(a1^2 + a2^2 + ... + aN^2).
  * Модуль пустого вектора считать равным 0.0.
  */
-fun abs(v: List<Double>): Double = TODO()
+fun abs(v: List<Double>): Double = sqrt(v.fold(0.0) { result, elem -> result + elem.pow(2) })
 
 /**
  * Простая (2 балла)
@@ -139,7 +139,11 @@ fun mean(list: List<Double>): Double = if (list.isEmpty()) 0.0 else list.sum() /
  *
  * Обратите внимание, что данная функция должна изменять содержание списка list, а не его копии.
  */
-fun center(list: MutableList<Double>): MutableList<Double> = TODO()
+fun center(list: MutableList<Double>): MutableList<Double> {
+    val mean = mean(list)
+    for (i in 0 until list.size) list[i] -= mean
+    return list
+}
 
 /**
  * Средняя (3 балла)
@@ -298,8 +302,8 @@ fun roman(n: Int): String {
     var x = n
     val result = StringBuilder()
     val convertMap = mapOf(
-        Pair(1, "I"), Pair(4, "IV"), Pair(5, "V"), Pair(9, "IX"), Pair(10, "X"), Pair(40, "XL"), Pair(50, "L"),
-        Pair(90, "XC"), Pair(100, "C"), Pair(400, "CD"), Pair(500, "D"), Pair(900, "CM"), Pair(1000, "M")
+        1 to "I", 4 to "IV", 5 to "V", 9 to "IX", 10 to "X", 40 to "XL", 50 to "L",
+        90 to "XC", 100 to "C", 400 to "CD", 500 to "D", 900 to "CM", 1000 to "M"
     ).toSortedMap(Comparator.reverseOrder())
     convertMap.forEach { (k, v) ->
         while (x >= k) {
