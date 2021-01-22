@@ -225,6 +225,13 @@ class Tests {
             )
         )
         assertEquals(
+            "a",
+            findCheapestStuff(
+                mapOf("" to ("" to 0.0), "a" to ("" to -1.7976931348623157e+308)),
+                ""
+            )
+        )
+        assertEquals(
             "Мария",
             findCheapestStuff(
                 mapOf("Мария" to ("печенье" to 20.0), "Орео" to ("печенье" to 100.0)),
@@ -239,6 +246,7 @@ class Tests {
         assertFalse(canBuildFrom(emptyList(), "foo"))
         assertTrue(canBuildFrom(listOf('a', 'b', 'o'), "baobab"))
         assertFalse(canBuildFrom(listOf('a', 'm', 'r'), "Marat"))
+        assertTrue(canBuildFrom(listOf('l'), "L"))
     }
 
     @Test
@@ -303,6 +311,22 @@ class Tests {
                 )
             )
         )
+        assertEquals(
+            mapOf(
+                "0" to setOf("2", "1", "3"),
+                "2" to setOf("1", "3"),
+                "3" to setOf(),
+                "1" to setOf("3"),
+            ),
+            propagateHandshakes(
+                mapOf(
+                    "0" to setOf("2"),
+                    "2" to setOf("1"),
+                    "3" to setOf(),
+                    "1" to setOf("3"),
+                )
+            )
+        )
     }
 
     @Test
@@ -337,6 +361,13 @@ class Tests {
             bagPacking(
                 mapOf("Кубок" to (500 to 2000), "Слиток" to (1000 to 5000)),
                 450
+            )
+        )
+        assertEquals(
+            setOf("1", "0"),
+            bagPacking(
+                mapOf("0" to (1 to 1), "1" to (1 to 1)),
+                2
             )
         )
     }

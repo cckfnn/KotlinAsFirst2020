@@ -6,8 +6,6 @@ import lesson4.task1.mean
 import java.util.Comparator
 
 
-
-
 // Урок 5: ассоциативные массивы и множества
 // Максимальное количество баллов = 14
 // Рекомендуемое количество баллов = 9
@@ -142,10 +140,10 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
  *   subtractOf(a = mutableMapOf("a" to "z"), mapOf("a" to "z"))
  *     -> a changes to mutableMapOf() aka becomes empty
  */
-fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>) {
-    a.forEach { (k, v) ->
-        if (b[k] != v) a.remove(k)
-    }
+
+fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): MutableMap<String, String> {
+    for ((key) in b) if (a[key] == b[key]) a.remove(key)
+    return a
 }
 
 /**
@@ -225,11 +223,15 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
  */
 fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): String? {
     val list = mutableListOf<Pair<String, Double>>()
-    for ((k, v) in stuff) if (kind == v.first) list.add(k to v.second)
+    for ((k, v) in stuff) {
+        if (kind == v.first) {
+            list.add(k to v.second)
+        }
+    }
     if (list.isEmpty()) return null
     var min = list[0].second
     var result = list[0].first
-    for (i in 2 until list.size) if (list[i].second < min) {
+    for (i in 1 until list.size) if (list[i].second < min) {
         min = list[i].second
         result = list[i].first
     }
@@ -245,7 +247,8 @@ fun findCheapestStuff(stuff: Map<String, Pair<String, Double>>, kind: String): S
  * Например:
  *   canBuildFrom(listOf('a', 'b', 'o'), "baobab") -> true
  */
-fun canBuildFrom(chars: List<Char>, word: String): Boolean = chars.containsAll(word.toSet())
+fun canBuildFrom(chars: List<Char>, word: String): Boolean =
+    chars.map { it.toLowerCase() }.containsAll(word.toLowerCase().toSet())
 
 /**
  * Средняя (4 балла)
@@ -321,20 +324,23 @@ fun hasAnagrams(words: List<String>): Boolean {
  */
 fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<String>> {
     val handshake = mutableMapOf<String, MutableSet<String>>()
-    for ((k, v) in friends) handshake[k] = v.toSortedSet()
+    for ((k, v) in friends) handshake[k] = v.toMutableSet()
 
-    for ((k, vSet) in friends) {
-        for (elem in vSet) {
-            if (handshake.containsKey(elem)) handshake[elem]?.let { handshake[k]?.addAll(it) }
-            else handshake[elem] = sortedSetOf()
+    for (i in friends) {
+        for ((k, vSet) in friends) {
+            for (elem in vSet) {
+                if (handshake.containsKey(elem)) handshake[elem]?.let { handshake[k]?.addAll(it) }
+                else handshake[elem] = sortedSetOf()
+            }
+            handshake[k]?.remove(k)
         }
-        handshake[k]?.remove(k)
     }
+
 
     return handshake
 
-
 }
+
 
 /**
  * Сложная (6 баллов)
@@ -382,17 +388,15 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *   ) -> emptySet()
  */
 fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
-    val sorted = mapOf<Double, String>().toSortedMap(Comparator.reverseOrder())
-    for ((k, v) in treasures) sorted[(v.second / v.first).toDouble()] = k
+    val list = mutableListOf<Pair<String, Double>>()
+    for ((k, v) in treasures) list.add(k to (v.second / v.first).toDouble())
+    val sorted = list.sortedByDescending { it.second }
     val result = mutableSetOf<String>()
     var mass = capacity
-    for ((_, v) in sorted) {
-        val x = treasures[v]?.first
-        if (x != null) {
-            if (x <= mass){
-                mass -= x
-                result.add(v)
-            }
+    sorted.forEach {
+        if (mass >= treasures[it.first]!!.first) {
+            result.add(it.first)
+            mass -= treasures[it.first]!!.first
         }
     }
     return result
